@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Shorts Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Inner Thoughts Generator</h1>
+            <p>Turn raw thoughts into highly relatable aesthetic vertical shorts.</p>
+        </header>
+
+        <main>
+            <form id="generateForm">
+                <div class="input-group">
+                    <label for="rawThought">Raw Thought:</label>
+                    <textarea id="rawThought" name="raw_thought" rows="4" placeholder="e.g. 'I always feel like everyone knows a secret rulebook to life except me...'"></textarea>
+                </div>
+                <button type="submit" id="submitBtn">
+                    <span class="btn-text">Generate Short Video</span>
+                    <div class="spinner" style="display: none;"></div>
+                </button>
+            </form>
+
+            <div id="statusSection" class="status-section" style="display: none;">
+                <h3>Status: <span id="statusText">Processing...</span></h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div id="resultSection" class="result-section" style="display: none;">
+                <h2>Video Generated Successfully!</h2>
+                <div class="video-container">
+                    <video id="resultVideo" controls width="300" height="533">
+                        <source id="videoSource" src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="caption-box">
+                    <strong>Caption generated:</strong>
+                    <p id="resultCaption"></p>
+                </div>
+            </div>
+            
+            <div id="errorSection" class="error-section" style="display: none;">
+                <h3>Error</h3>
+                <p id="errorText"></p>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
