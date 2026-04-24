@@ -48,7 +48,7 @@ OUTPUT FORMAT (STRICT JSON)
 }
 """
     completion = client.chat.completions.create(
-        model="llama3-8b-8192", # Fast and capable enough for this
+        model="llama-3.3-70b-versatile", 
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": f"RAW_THOUGHT: {raw_thought}"}
@@ -64,7 +64,9 @@ def generate_audio(text, output_path):
     command = [
         "piper",
         "--model", PIPER_MODEL,
-        "--output_file", output_path
+        "--output_file", output_path,
+        "--length-scale", "1.25", # Makes the voice 25% slower/more deliberate
+        "--sentence-silence", "0.4" # Adds a bit more pause between sentences
     ]
     # Running piper using subprocess and piping the text to stdin
     subprocess.run(command, input=text.encode('utf-8'), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -134,10 +136,11 @@ def build_final_video(bg_video, audio_path, ass_path, output_video):
     command = [
         "ffmpeg",
         "-y",
+        "-stream_loop", "-1",
         "-i", bg_video,
         "-i", audio_path,
         "-filter_complex", 
-        f"[0:v]loop=loop=-1:size=2:start=0,setpts=N/FRAME_RATE/TB,crop=ih*9/16:ih,scale=1080:1920,subtitles='{ass_escaped}'[v]",
+        f"[0:v]crop=ih*9/16:ih,scale=1080:1920,subtitles='{ass_escaped}'[v]",
         "-map", "[v]",
         "-map", "1:a",
         "-c:v", "libx264",
