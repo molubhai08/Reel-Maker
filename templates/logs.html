@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generation Logs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .container { max-width: 800px; width: 100%; }
+        .log-entry {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.5rem;
+        }
+        .timestamp { color: var(--primary-color); font-weight: bold; }
+        .thought-section { margin-bottom: 1.5rem; }
+        .thought-section h4 { margin-bottom: 0.5rem; color: var(--text-muted); }
+        .llm-section h4 { margin-bottom: 0.5rem; color: var(--text-muted); }
+        .code-block {
+            background: #0f111a;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            color: #a6accd;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        nav { margin-bottom: 2rem; text-align: center; }
+        nav a { 
+            color: var(--primary-color); 
+            text-decoration: none; 
+            font-weight: bold; 
+            padding: 0.5rem 1rem; 
+            border: 1px solid var(--primary-color); 
+            border-radius: 8px; 
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+        nav a:hover { 
+            background: var(--primary-color);
+            color: white; 
+        }
+        .view-btn {
+            color: white;
+            background: var(--primary-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .view-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Generation Logs</h1>
+            <p>History of your raw thoughts and LLM outputs</p>
+        </header>
+
+        <nav>
+            <a href="/">&larr; Back to Generator</a>
+        </nav>
+
+        <main>
+            {% if logs %}
+                {% for log in logs %}
+                <div class="log-entry">
+                    <div class="log-header">
+                        <span class="timestamp">{{ log.timestamp }}</span>
+                        {% if log.video_url %}
+                        <a href="{{ log.video_url }}" target="_blank" class="view-btn">View Video</a>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="thought-section">
+                        <h4>Raw Thought</h4>
+                        <p style="font-size: 1.1rem; line-height: 1.5; font-style: italic;">"{{ log.raw_thought }}"</p>
+                    </div>
+
+                    <div class="llm-section">
+                        <h4>LLM Output</h4>
+                        <div class="code-block">{{ log.llm_output | tojson(indent=2) }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="text-align: center; padding: 2rem; color: var(--text-muted);">No logs found yet. Generate some videos first!</p>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>
